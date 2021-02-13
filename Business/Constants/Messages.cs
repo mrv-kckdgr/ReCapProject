@@ -26,5 +26,22 @@ namespace Business.Constants
 
         public static string MaintenanceTime = "Sistem bakımda";
 
+        public static string UserNameInvalid = "Kullanıcı adı geçersiz!!!";
+        
+        public static string UserAdded = "Kullanıcı başarılı bir şekilde eklendi.";
+        
+        public static string UserListed = "Kullanıcı başarılı bir şekilde listelendi.";
+        
+        public static string CustomerAdded = "Müşteri başarılı bir şekilde eklendi.";
+        
+        public static string CompanyNameInvalid = "Şirket adı geçersiz!!!";
+        
+        public static string CustomerListed = "Müşteri başarılı bir şekilde listelendi.";
+        
+        public static string RentalListed = "Rezervasyon listesi listelendi";
+        
+        public static string RentalAdded = "Rezervasyon eklendi";
+
+        public static string NotNullReturnDate = "Araba zaten kiralanmış!!!";
     }
 }
