@@ -22,6 +22,15 @@ namespace Business.DependencyResolves.Autofac
 
             builder.RegisterType<ColorManager>().As<IColorService>();
             builder.RegisterType<EfColorDal>().As<IColorDal>();
+
+            builder.RegisterType<CustomerManager>().As<ICustomerService>();
+            builder.RegisterType<EfCustomerDal>().As<ICustomerDal>();
+
+            builder.RegisterType<UserManager>().As<IUserService>();
+            builder.RegisterType<EfUserDal>().As<IUserDal>();
+
+            builder.RegisterType<RentalManager>().As<IRentalService>();
+            builder.RegisterType<EfRentalDal>().As<IRentalDal>();            
         }
     }
 }

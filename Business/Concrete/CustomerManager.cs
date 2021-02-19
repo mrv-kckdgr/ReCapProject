@@ -1,8 +1,11 @@
 ﻿using Business.Abstract;
 using Business.Constants;
+using Business.ValidationRules.FluentValidation;
+using Core.CrossCuttingConcerns.Validation;
 using Core.Utilities.Results;
 using DataAccess.Abstract;
 using Entities.Concrete;
+using FluentValidation;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -20,10 +23,7 @@ namespace Business.Concrete
 
         public IResult Add(Customer customer)
         {
-            if (customer.CompanyName.Length<2)
-            {
-                return new ErrorResult(Messages.CompanyNameInvalid);
-            }
+            ValidationTool.Validate(new CustomerValidator(), customer);
             _cutomerDal.Add(customer);
             return new SuccessResult(Messages.CustomerAdded);
         }
