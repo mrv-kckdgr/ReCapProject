@@ -50,3 +50,12 @@ CONSTRAINT FK_CAR FOREIGN KEY(CarId) REFERENCES Cars(Id),
 CONSTRAINT FK_CUSTOMER FOREIGN KEY(CustomerId) REFERENCES Customers(Id)
 );
 
+
+CREATE TABLE CarImages(
+Id int primary key identity(1, 1),
+CarId int,
+ImagePath varchar(100),
+Date datetime not null default getdate(),
+
+CONSTRAINT FK_CarId FOREIGN KEY(CarId) REFERENCES Cars(Id)
+); 
