@@ -3,6 +3,7 @@ using Business.Constants;
 using Business.ValidationRules.FluentValidation;
 using Core.Aspects.Autofac.Validation;
 using Core.CrossCuttingConcerns.Validation;
+using Core.Utilities.Business;
 using Core.Utilities.Results;
 using DataAccess.Abstract;
 using DataAccess.Concrete.InMemory;
@@ -29,18 +30,18 @@ namespace Business.Concrete
         public IResult Add(Car car)
         {
             //ValidationTool.Validate(new CarValidator(), car);
+            IResult result =BusinessRules.Run(CheckIfCarNameExists(car.Description),
+                CheckIfCarCountOfBrandCorrect(car.BrandId));
 
-            if (CheckIfCarCountOfBrandCorrect(car.BrandId).Success)
+            if (result!=null)
             {
-                if (CheckIfCarNameExists(car.Description).Success)
-                {
-                    _carDal.Add(car);
-
-                    return new SuccessResult(Messages.CarAdded);
-                }                
+                return result;
             }
+          
+            _carDal.Add(car);
 
-            return new ErrorResult();
+            return new SuccessResult(Messages.CarAdded);
+              
            
         }
 
