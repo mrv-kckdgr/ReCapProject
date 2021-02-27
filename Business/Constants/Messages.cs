@@ -43,5 +43,9 @@ namespace Business.Constants
         public static string RentalAdded = "Rezervasyon eklendi";
 
         public static string NotNullReturnDate = "Araba zaten kiralanmış!!!";
+
+        public static string CarCountOfBrandError = "Bir markada en fazla 10 araç olabilir.";
+
+        public static string CarNameAlreadyExists = "Bu isimde zaten başka bir araç var!!!";
     }
 }
