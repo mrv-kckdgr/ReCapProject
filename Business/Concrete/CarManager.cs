@@ -20,18 +20,20 @@ namespace Business.Concrete
     public class CarManager : ICarService
     {
         ICarDal _carDal;
+        IBrandService _brandService;
 
-        public CarManager(ICarDal carDal)
+        public CarManager(ICarDal carDal, IBrandService brandService)
         {
             _carDal = carDal;
+            _brandService = brandService;
         }
 
         [ValidationAspect(typeof(CarValidator))]
         public IResult Add(Car car)
-        {
+        {            
             //ValidationTool.Validate(new CarValidator(), car);
             IResult result =BusinessRules.Run(CheckIfCarNameExists(car.Description),
-                CheckIfCarCountOfBrandCorrect(car.BrandId));
+                CheckIfCarCountOfBrandCorrect(car.BrandId), CheckIfBrandLimitExceded());
 
             if (result!=null)
             {
@@ -106,6 +108,17 @@ namespace Business.Concrete
             if (result)
             {
                 return new ErrorResult(Messages.CarNameAlreadyExists);
+            }
+            return new SuccessResult();
+        }
+
+        //Eğer mevcut marka sayısı 15'i geçtiyse sisteme yeni ürün eklenemez 
+        private IResult CheckIfBrandLimitExceded()
+        {
+            var result = _brandService.GetAll();
+            if (result.Data.Count>15)
+            {
+                return new ErrorResult(Messages.BrandLimitExceded);
             }
             return new SuccessResult();
         }
