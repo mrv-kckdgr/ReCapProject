@@ -49,5 +49,17 @@ namespace Business.Constants
         public static string CarNameAlreadyExists = "Bu isimde zaten başka bir araç var!!!";
 
         public static string BrandLimitExceded = "Marka limiti aşıldığı için yeni araç eklenemiyor!!!";
+
+        public static string CarImageAdded = "Araç resmi başarılı bir şekilde eklenmiştir.";
+
+        public static string CarImageListed = "Ürün görselleri başarılı bir şekilde listelendi";
+
+        public static string CarImageUpdated = "Ürün görseli başarılı bir şekilde güncellendi";
+
+        public static string CarImageCountOfCarError = "Bir aracın maksimum 5 adet görseli olabilir!!";
+
+        public static string CarImageDeleted = "Ürün görseli başarılı bir şekilde silinmiştir.";
+
+        public static string NotUploaded = "Resim ekleme işlemi başarısız!!";
     }
 }
