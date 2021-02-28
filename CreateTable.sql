@@ -32,6 +32,21 @@ CREATE TABLE Users (
     PRIMARY KEY CLUSTERED ([Id] ASC)
 );
 
+CREATE TABLE OperationClaim
+(
+	Id INT NOT NULL PRIMARY KEY IDENTITY, 
+    Name VARCHAR(250) NOT NULL
+)
+
+CREATE TABLE UserOperationClaims
+(
+	Id INT NOT NULL PRIMARY KEY IDENTITY, 
+    UserId INT NOT NULL, 
+    OperationClaim INT NOT NULL, 
+    CONSTRAINT [PK_Table] PRIMARY KEY ([Id]), 
+    CONSTRAINT [PK_Table] PRIMARY KEY ([Id])
+)
+
 
 CREATE TABLE Customers(
 Id int primary key identity(1,1),
