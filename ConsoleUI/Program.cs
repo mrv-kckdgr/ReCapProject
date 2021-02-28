@@ -74,43 +74,9 @@ namespace ConsoleUI
             }
 
             
-        }
+        }      
 
-        private static void UserTest()
-        {
-            UserManager userManager = new UserManager(new EfUserDal());
-            var result = userManager.GetAll();
-            if (result.Success==true)
-            {
-                foreach (var user in result.Data)
-                {
-                    Console.WriteLine(user.FirstName);
-                }
-               
-            }
-            Console.WriteLine(result.Message);
-
-        }
-
-        private static void AddUser()
-        {
-            UserManager userManager = new UserManager(new EfUserDal());
-            userManager.Add(new User 
-            { 
-                FirstName="Mehmet", 
-                LastName="AKDAĞ",
-                Email="mehmet@gmail.com",
-                Password_="789"
-            });
-            userManager.Add(new User
-            {
-                FirstName = "Coşkun", 
-                LastName = "YILDIZ",
-                Email = "yildiz@gmail.com",
-                Password_ = "753"
-            });
-
-        }
+        
         
 
         private static void TestRental()

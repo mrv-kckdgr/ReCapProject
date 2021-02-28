@@ -53,10 +53,14 @@ namespace WebAPI.Controllers
         [HttpPost("add")]
         public async Task<IActionResult> Add([FromForm] CarImage carImage, [FromForm] byte[] fileName, IFormFile file)
         {
-            
+
 
             // Full path to file in temp location
+            //var filePath = Path.GetDirectoryName("~\\Images\\");
             var filePath = Path.GetTempFileName();
+
+            Guid guid = Guid.NewGuid();
+            carImage.ImagePath = filePath + "\\" + guid + ".png";
 
             if (file.Length > 0)
                 using (var stream = new FileStream(filePath, FileMode.Create))
@@ -64,8 +68,8 @@ namespace WebAPI.Controllers
 
             // Process uploaded files
             carImage.Date = DateTime.Now;
-            Guid guid = Guid.NewGuid();
-            carImage.ImagePath = "\\Images\\" + guid + ".png" ;
+            //Guid guid = Guid.NewGuid();
+            //carImage.ImagePath = "\\Images\\" + guid + ".png" ;
             var result = _carImageService.Add(carImage);
             if (result.Success)
             {

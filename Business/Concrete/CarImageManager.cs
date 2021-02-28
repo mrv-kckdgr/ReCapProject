@@ -1,5 +1,8 @@
 ﻿using Business.Abstract;
 using Business.Constants;
+using Business.ValidationRules.FluentValidation;
+using Core.Aspects.Autofac.Validation;
+using Core.Utilities.Business;
 using Core.Utilities.Results;
 using DataAccess.Abstract;
 using Entities.Concrete;
@@ -18,8 +21,17 @@ namespace Business.Concrete
         {
             _carImageDal = carImageDal;
         }
+
+        [ValidationAspect(typeof(CarImageValidator))]
         public IResult Add(CarImage carImage)
-        {            
+        {
+            IResult result = BusinessRules.Run(CheckIfCarImageCountOfCarCorrect(carImage.CarId));
+
+            if (result!=null)
+            {
+                return result;
+            }
+
             _carImageDal.Add(carImage);
 
             return new SuccessResult(Messages.CarImageAdded);
@@ -59,7 +71,7 @@ namespace Business.Concrete
         private IResult CheckIfCarImageCountOfCarCorrect(int carId)
         {
             var result = _carImageDal.GetAll(c => c.CarId == carId).Count;
-            if (result>5)
+            if (result>=5)
             {
                 return new ErrorResult(Messages.CarImageCountOfCarError);
             }
