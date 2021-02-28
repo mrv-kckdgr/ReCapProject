@@ -21,12 +21,15 @@ CONSTRAINT FK_BRAND FOREIGN KEY(BrandId) REFERENCES Brands(Id),
 CONSTRAINT FK_COLOR FOREIGN KEY(ColorId) REFERENCES Colors(Id)
 );
 
-CREATE TABLE Users(
-Id int primary key identity(1, 1),
-FirstName nvarchar(50) not null,
-LastName nvarchar(50) not null,
-Email varchar(65) not null,
-Password_ varchar(20) not null
+CREATE TABLE Users (
+    Id        INT           IDENTITY (1, 1) NOT NULL,
+    FirstName VARCHAR(50) NOT NULL,
+    LastName VARCHAR(50) NOT NULL,
+    Email     VARCHAR (65)  NOT NULL,
+    PasswordHash BINARY(500)  NOT NULL,
+    PasswordSalt BINARY(500) NOT NULL, 
+    Status BIT NOT NULL, 
+    PRIMARY KEY CLUSTERED ([Id] ASC)
 );
 
 
