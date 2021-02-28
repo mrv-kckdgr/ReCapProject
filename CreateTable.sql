@@ -40,13 +40,13 @@ CREATE TABLE OperationClaim
 
 CREATE TABLE UserOperationClaims
 (
-	Id INT NOT NULL PRIMARY KEY IDENTITY, 
-    UserId INT NOT NULL, 
-    OperationClaim INT NOT NULL, 
-    CONSTRAINT [PK_Table] PRIMARY KEY ([Id]), 
-    CONSTRAINT [PK_Table] PRIMARY KEY ([Id])
+    Id INT NOT NULL PRIMARY KEY IDENTITY, 
+    [UserId] INT NOT NULL, 
+    [OperationClaim] INT NOT NULL, 
+    
+    CONSTRAINT FK_UserOperationClaims_User FOREIGN KEY (UserId) REFERENCES Users(Id),
+    CONSTRAINT FK_UserOperationClaims_OperationClaims FOREIGN KEY (OperationClaim) REFERENCES OperationClaims(Id)
 )
-
 
 CREATE TABLE Customers(
 Id int primary key identity(1,1),
