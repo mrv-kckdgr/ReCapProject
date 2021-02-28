@@ -51,32 +51,29 @@ namespace WebAPI.Controllers
         }
 
         [HttpPost("add")]
-        public IActionResult Add(CarImage carImage, [FromForm] FileUpload fileUpload)
+        public async Task<IActionResult> Add([FromForm] CarImage carImage, [FromForm] byte[] fileName, IFormFile file)
         {
-            if (fileUpload.Files.Length>0)
+            
+
+            // Full path to file in temp location
+            var filePath = Path.GetTempFileName();
+
+            if (file.Length > 0)
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                    await file.CopyToAsync(stream);
+
+            // Process uploaded files
+            carImage.Date = DateTime.Now;
+            Guid guid = Guid.NewGuid();
+            carImage.ImagePath = "\\Images\\" + guid + ".png" ;
+            var result = _carImageService.Add(carImage);
+            if (result.Success)
             {
-                string path = _webHostEnvironment.WebRootPath + "\\Images\\";
-                if (!Directory.Exists(path))
-                {
-                    Directory.CreateDirectory(path);
-                }
-                using(FileStream fileStream = System.IO.File.Create(path + fileUpload.Files.FileName))
-                {
-                    fileUpload.Files.CopyTo(fileStream);
-                    fileStream.Flush();
-                    return Ok("Uploaded");
-                }
+                return Ok(result);
             }
-            else
-            {
-                return BadRequest("Not Uploaded!!");
-            }
-            //var result = _carImageService.Add(carImage);
-            //if (result.Success)
-            //{
-            //    return Ok(result);
-            //}
-            //return BadRequest(result);
+            return BadRequest(result);
+            
+
         }
 
         [HttpPost("update")]

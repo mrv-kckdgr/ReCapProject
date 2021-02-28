@@ -7,6 +7,6 @@ namespace Business.Upload
 {
     public class FileUpload
     {
-        public IFormFile Files { get; set; }
+        public IFormFile file { get; set; }
     }
 }
