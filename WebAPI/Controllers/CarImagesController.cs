@@ -57,13 +57,13 @@ namespace WebAPI.Controllers
 
             // Full path to file in temp location
             //var filePath = Path.GetDirectoryName("~\\Images\\");
-            var filePath = Path.GetTempFileName();
+            var filePath = "~/Images";
 
             Guid guid = Guid.NewGuid();
             carImage.ImagePath = filePath + "\\" + guid + ".png";
 
             if (file.Length > 0)
-                using (var stream = new FileStream(filePath, FileMode.Create))
+                using (var stream = new FileStream(carImage.ImagePath, FileMode.Create))
                     await file.CopyToAsync(stream);
 
             // Process uploaded files

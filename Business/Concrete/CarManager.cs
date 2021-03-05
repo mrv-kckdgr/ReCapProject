@@ -2,6 +2,9 @@
 using Business.BusinessAspects.Autofac;
 using Business.Constants;
 using Business.ValidationRules.FluentValidation;
+using Core.Aspects.Autofac.Caching;
+using Core.Aspects.Autofac.Performance;
+using Core.Aspects.Autofac.Transaction;
 using Core.Aspects.Autofac.Validation;
 using Core.CrossCuttingConcerns.Validation;
 using Core.Utilities.Business;
@@ -29,8 +32,9 @@ namespace Business.Concrete
             _brandService = brandService;
         }
 
-        [SecuredOperation("car.add, admin")]
+        [SecuredOperation("car.add,admin")]
         [ValidationAspect(typeof(CarValidator))]
+        [CacheRemoveAspect("IProductService.Get")]
         public IResult Add(Car car)
         {            
             //ValidationTool.Validate(new CarValidator(), car);
@@ -54,6 +58,7 @@ namespace Business.Concrete
             return new SuccessDataResult<List<Car>>(_carDal.GetAll(c => c.ColorId == id));
         }
 
+        [CacheAspect]
         public IDataResult<List<Car>> GetAll()
         {
             if (DateTime.Now.Hour == 1)
@@ -74,6 +79,8 @@ namespace Business.Concrete
             return new SuccessDataResult<List<Car>>(_carDal.GetAll(c => c.DailyPrice <= min && c.DailyPrice >= max));
         }
 
+        [CacheAspect]
+        [PerformanceAspect(2)]
         public IDataResult<Car> GetById(int carId)
         {
             return new SuccessDataResult<Car>(_carDal.Get(c => c.Id == carId));
@@ -85,6 +92,7 @@ namespace Business.Concrete
         }
 
         [ValidationAspect(typeof(CarValidator))]
+        [CacheRemoveAspect("IProductService.Get")]
         public IResult Update(Car car)
         {
             throw new NotImplementedException();
@@ -118,11 +126,26 @@ namespace Business.Concrete
         private IResult CheckIfBrandLimitExceded()
         {
             var result = _brandService.GetAll();
-            if (result.Data.Count>15)
+            if (result.Data.Count>50)
             {
                 return new ErrorResult(Messages.BrandLimitExceded);
             }
             return new SuccessResult();
+        }
+
+        
+        [TransactionScopeAspect]
+        public IResult AddTransactionTest(Car car)
+        {
+            
+            Add(car);
+            if (car.DailyPrice<150)
+            {
+                throw new Exception("denme");
+            }
+            Add(car);
+
+            return null;
         }
     }
 }
