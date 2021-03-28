@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Core.Utilities.FileUpload;
 
 namespace WebAPI.Controllers
 {
@@ -20,11 +21,13 @@ namespace WebAPI.Controllers
     {
         ICarImageService _carImageService;
         IWebHostEnvironment _webHostEnvironment;
+        private FileHelpers _fileHelpers;
 
-        public CarImagesController(ICarImageService carImageService, IWebHostEnvironment webHostEnvironment)
+        public CarImagesController(ICarImageService carImageService, IWebHostEnvironment webHostEnvironment,  FileHelpers fileHelpers)
         {
             _carImageService = carImageService;
             _webHostEnvironment = webHostEnvironment;
+            _fileHelpers = fileHelpers;
         }
 
         [HttpGet("getall")]
@@ -51,32 +54,35 @@ namespace WebAPI.Controllers
         }
 
         [HttpPost("add")]
-        public async Task<IActionResult> Add([FromForm] CarImage carImage, [FromForm] byte[] fileName, IFormFile file)
+        public IActionResult Add([FromForm] CarImage carImage, IFormFile file)
         {
-
-
-            // Full path to file in temp location
-            //var filePath = Path.GetDirectoryName("~\\Images\\");
-            var filePath = "~/Images";
-
-            Guid guid = Guid.NewGuid();
-            carImage.ImagePath = filePath + "\\" + guid + ".png";
-
-            if (file.Length > 0)
-                using (var stream = new FileStream(carImage.ImagePath, FileMode.Create))
-                    await file.CopyToAsync(stream);
-
-            // Process uploaded files
-            carImage.Date = DateTime.Now;
-            //Guid guid = Guid.NewGuid();
-            //carImage.ImagePath = "\\Images\\" + guid + ".png" ;
-            var result = _carImageService.Add(carImage);
-            if (result.Success)
-            {
-                return Ok(result);
-            }
-            return BadRequest(result);
             
+                //Save image to wwwroot/image
+                string wwwRootPath = _webHostEnvironment.WebRootPath;
+                //string fileName = Path.GetFileNameWithoutExtension(file.FileName);
+                //string extension = Path.GetExtension(file.FileName);
+                 
+                
+                //string path = Path.Combine("/Images/", Guid.NewGuid().ToString()) ;
+               
+                //using (var fileStream = new FileStream(path+extension, FileMode.Create))
+                //{
+                //    carImage.ImagePath.CopyTo(fileStream);
+                //}
+
+            
+            //var images =  _fileHelpers.Upload(file, wwwRootPath, "IMAGE");
+
+           
+                var result = _carImageService.Add(carImage, file,wwwRootPath,"IMAGE");
+                if (result.Success)
+                {
+                    return Ok(result);
+                }
+                return BadRequest(result);
+          
+
+
 
         }
 
@@ -101,5 +107,23 @@ namespace WebAPI.Controllers
             }
             return BadRequest(result);
         }
+
+
+        //private string UploadedFile(CarImage carImage)
+        //{
+        //    string uniqueFileName = null;
+
+        //    if (carImage.ImagePath != null)
+        //    {
+        //        string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "Images");
+        //        uniqueFileName = Guid.NewGuid().ToString() + "_" + carImage.ImagePath.FileName ;
+        //        string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+        //        using (var fileStream = new FileStream(filePath, FileMode.Create))
+        //        {
+        //            carImage.ImagePath.CopyTo(fileStream);
+        //        }
+        //    }
+        //    return uniqueFileName;
+        //}
     }
 }

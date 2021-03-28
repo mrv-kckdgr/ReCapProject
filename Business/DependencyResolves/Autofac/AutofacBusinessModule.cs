@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Core.Utilities.FileUpload;
 
 namespace Business.DependencyResolves.Autofac
 {
@@ -43,7 +44,9 @@ namespace Business.DependencyResolves.Autofac
 
             builder.RegisterType<AuthManager>().As<IAuthService>();
             builder.RegisterType<JwtHelper>().As<ITokenHelper>();
-           
+
+            builder.RegisterType<FileHelpers>().As<FileHelpers>();
+
 
             var assembly = System.Reflection.Assembly.GetExecutingAssembly();
 

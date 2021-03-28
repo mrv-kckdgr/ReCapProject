@@ -9,32 +9,42 @@ using Entities.Concrete;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Core.Utilities.FileUpload;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Internal;
 
 namespace Business.Concrete
 {
     public class CarImageManager : ICarImageService
     {
         ICarImageDal _carImageDal;
+        private FileHelpers _fileHelpers;
 
-
-        public CarImageManager(ICarImageDal carImageDal)
+        public CarImageManager(ICarImageDal carImageDal, FileHelpers fileHelpers)
         {
             _carImageDal = carImageDal;
+            _fileHelpers = fileHelpers;
         }
 
         [ValidationAspect(typeof(CarImageValidator))]
-        public IResult Add(CarImage carImage)
+        public IResult Add(CarImage carImage, IFormFile file,string path,string fileType)
         {
             IResult result = BusinessRules.Run(CheckIfCarImageCountOfCarCorrect(carImage.CarId));
 
-            if (result!=null)
+            if (result != null)
             {
                 return result;
             }
+            var images = _fileHelpers.Upload(file, path, fileType);
+            if (images.Success)
+            {
+                carImage.Date=DateTime.Now;
+                _carImageDal.Add(carImage);
 
-            _carImageDal.Add(carImage);
+                return new SuccessResult(Messages.CarImageAdded);
+            }
 
-            return new SuccessResult(Messages.CarImageAdded);
+            return new ErrorResult(images.Message);
         }
 
         public IResult Delete(CarImage carImage)
