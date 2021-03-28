@@ -77,5 +77,11 @@ namespace Business.Constants
         public static string UserAlreadyExists = "Kullanıcı mevcut";
 
         public static string AccessTokenCreated = "Access Token oluşturuldu";
+
+        public static string EmptyIfCarImages = "Araba resminiz olmadığı için sirket logonuz eklenmiştir";
+
+        public static string CarImageNotUpdated = "Araç resmi güncellenemedi";
+
+        public static string CarImageDetailListed = "Araç resim detayları başarılı bir şekilde listelendi";
     }
 }

@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Core.Utilities.FileUpload;
+using Entities.DTOs;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Internal;
 
@@ -29,7 +30,7 @@ namespace Business.Concrete
         [ValidationAspect(typeof(CarImageValidator))]
         public IResult Add(CarImage carImage, IFormFile file,string path,string fileType)
         {
-            IResult result = BusinessRules.Run(CheckIfCarImageCountOfCarCorrect(carImage.CarId));
+            IResult result = BusinessRules.Run(CheckIfCarImageCountOfCarCorrect(carImage.CarId), EmptyIfCarImages(carImage.CarId, carImage));
 
             if (result != null)
             {
@@ -38,6 +39,7 @@ namespace Business.Concrete
             var images = _fileHelpers.Upload(file, path, fileType);
             if (images.Success)
             {
+                carImage.ImagePath = images.Data;
                 carImage.Date=DateTime.Now;
                 _carImageDal.Add(carImage);
 
@@ -52,6 +54,12 @@ namespace Business.Concrete
             _carImageDal.Delete(carImage);
 
             return new SuccessResult(Messages.CarImageDeleted);
+        }
+
+        public IDataResult<List<CarImageDetailDto>> GetCarImageDetails()
+        {
+            return new SuccessDataResult<List<CarImageDetailDto>>(_carImageDal.GetCarImageDetails(), Messages.CarImageDetailListed);
+
         }
 
         public IDataResult<List<CarImage>> GetAll()
@@ -69,11 +77,21 @@ namespace Business.Concrete
             return new SuccessDataResult<CarImage>(_carImageDal.Get(c => c.Id == carImageId));
         }
 
-        public IResult Update(CarImage carImage)
+        public IResult Update(CarImage carImage, IFormFile file, string path, string fileType)
         {
-            _carImageDal.Update(carImage);
+            var images = _fileHelpers.Upload(file, path, fileType);
+            if (images.Success)
+            {
+                carImage.ImagePath = images.Data;
+                carImage.Date=DateTime.Now;
 
-            return new SuccessResult(Messages.CarImageUpdated);
+                _carImageDal.Update(carImage);
+
+                return new SuccessResult(Messages.CarImageUpdated);
+            }
+
+            return new ErrorResult(Messages.CarImageNotUpdated);
+
         }
 
 
@@ -88,6 +106,20 @@ namespace Business.Concrete
 
             return new SuccessResult();
         }
-        
+
+        //Eğer bir arabaya ait resim yoksa, default bir resim gösteriniz.Bu resim şirket logonuz olabilir. Tek elemanlı liste
+        private IResult EmptyIfCarImages(int carId, CarImage carImage)
+        {
+            var result = _carImageDal.GetAll(c => c.CarId == carId).Count;
+            if (result==0)
+            {
+                carImage.ImagePath = "~/Images/logo.jpg";
+                
+            }
+
+            return new SuccessResult(Messages.EmptyIfCarImages);
+        }
+
+
     }
 }

@@ -56,40 +56,23 @@ namespace WebAPI.Controllers
         [HttpPost("add")]
         public IActionResult Add([FromForm] CarImage carImage, IFormFile file)
         {
-            
-                //Save image to wwwroot/image
-                string wwwRootPath = _webHostEnvironment.WebRootPath;
-                //string fileName = Path.GetFileNameWithoutExtension(file.FileName);
-                //string extension = Path.GetExtension(file.FileName);
-                 
-                
-                //string path = Path.Combine("/Images/", Guid.NewGuid().ToString()) ;
-               
-                //using (var fileStream = new FileStream(path+extension, FileMode.Create))
-                //{
-                //    carImage.ImagePath.CopyTo(fileStream);
-                //}
+            string wwwRootPath = _webHostEnvironment.WebRootPath;
 
-            
-            //var images =  _fileHelpers.Upload(file, wwwRootPath, "IMAGE");
-
-           
-                var result = _carImageService.Add(carImage, file,wwwRootPath,"IMAGE");
-                if (result.Success)
-                {
-                    return Ok(result);
-                }
-                return BadRequest(result);
-          
-
-
+            var result = _carImageService.Add(carImage, file,wwwRootPath,"IMAGE");
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+            return BadRequest(result);
 
         }
 
         [HttpPost("update")]
-        public IActionResult Update(CarImage carImage)
+        public IActionResult Update([FromForm] CarImage carImage, IFormFile file)
         {
-            var result = _carImageService.Update(carImage);
+            string wwwRootPath = _webHostEnvironment.WebRootPath;
+
+            var result = _carImageService.Update(carImage, file, wwwRootPath, "IMAGE");
             if (result.Success)
             {
                 return Ok(result);
@@ -109,21 +92,16 @@ namespace WebAPI.Controllers
         }
 
 
-        //private string UploadedFile(CarImage carImage)
-        //{
-        //    string uniqueFileName = null;
+        [HttpGet("getcarimagedetails")]
+        public IActionResult GetCarImagesDetail()
+        {
+            var result = _carImageService.GetCarImageDetails();
+            if (result.Success)
+            {
+                return Ok(result);
+            }
 
-        //    if (carImage.ImagePath != null)
-        //    {
-        //        string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "Images");
-        //        uniqueFileName = Guid.NewGuid().ToString() + "_" + carImage.ImagePath.FileName ;
-        //        string filePath = Path.Combine(uploadsFolder, uniqueFileName);
-        //        using (var fileStream = new FileStream(filePath, FileMode.Create))
-        //        {
-        //            carImage.ImagePath.CopyTo(fileStream);
-        //        }
-        //    }
-        //    return uniqueFileName;
-        //}
+            return BadRequest(result);
+        }
     }
 }

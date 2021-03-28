@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Entities.DTOs;
 
 namespace Business.Abstract
 {
@@ -15,9 +16,11 @@ namespace Business.Abstract
 
         IResult Add(CarImage carImage, IFormFile file, string path, string fileType);
 
-        IResult Update(CarImage carImage);
+        IResult Update(CarImage carImage, IFormFile file, string path, string fileType);
 
         IResult Delete(CarImage carImage);
+
+        IDataResult<List<CarImageDetailDto>> GetCarImageDetails();
 
     }
 }
