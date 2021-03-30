@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
+//using System.Linq.Expressions;
 using System.Text;
 
 namespace DataAccess.Concrete.EntityFramework
@@ -22,6 +22,8 @@ namespace DataAccess.Concrete.EntityFramework
                              on c.BrandId equals b.Id
                              join color in context.Colors
                              on c.ColorId equals color.Id
+                             join image in context.CarImages
+                                 on c.Id equals image.CarId
                              select new CarDetailDto
                              {
                                  CarId = c.Id,
@@ -29,7 +31,8 @@ namespace DataAccess.Concrete.EntityFramework
                                  ColorName = color.ColorName,
                                  DailyPrice = c.DailyPrice,
                                  ModelYear = c.ModelYear,
-                                 Description = c.Description
+                                 Description = c.Description,
+                                 ImagePath = image.ImagePath
                              };
                 return result.ToList();
             }
