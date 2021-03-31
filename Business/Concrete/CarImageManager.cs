@@ -39,7 +39,7 @@ namespace Business.Concrete
             var images = _fileHelpers.Upload(file, path, fileType);
             if (images.Success)
             {
-                carImage.ImagePath = images.Data;
+                carImage.ImagePath = images.Data.Remove(0,8);
                 carImage.Date=DateTime.Now;
                 _carImageDal.Add(carImage);
 
